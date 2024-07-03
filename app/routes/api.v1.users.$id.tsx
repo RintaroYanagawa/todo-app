@@ -1,4 +1,4 @@
-import { json, type LoaderFunction } from '@remix-run/node';
+import { type LoaderFunction, json } from '@remix-run/node';
 import prisma from '~/libs/prisma';
 
 export const loader: LoaderFunction = async ({ params }) => {

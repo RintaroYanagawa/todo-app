@@ -1,11 +1,7 @@
-import {
-  json,
-  type LoaderFunctionArgs,
-  type MetaFunction,
-} from '@remix-run/node';
-import { getSession } from '../sessions';
-import { useLoaderData } from '@remix-run/react';
+import type { MetaFunction } from '@remix-run/node';
+import { useRouteLoaderData } from '@remix-run/react';
 import { Button } from '~/components/ui/button';
+import type { loader } from '~/root';
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,22 +10,22 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const session = await getSession(request.headers.get('Cookie'));
-  const isLoggedIn = session.has('userId');
-
-  return json({
-    isLoggedIn,
-  });
-};
-
 export default function Index() {
-  const data = useLoaderData<typeof loader>();
+  const data = useRouteLoaderData<typeof loader>('route');
   return (
     <div>
       <header className="flex items-center justify-between px-5 py-3">
         <p className="text-4xl font-bold select-none">Todos</p>
-        {data.isLoggedIn ? <Button>Sign out</Button> : <Button>Sign in</Button>}
+        <div>
+          {data?.isLoggedIn ? (
+            <Button>Sign out</Button>
+          ) : (
+            <>
+              <Button>Sign in</Button>
+              <Button>Sign up</Button>
+            </>
+          )}
+        </div>
       </header>
     </div>
   );

@@ -6,6 +6,17 @@ import {
   ScrollRestoration,
 } from '@remix-run/react';
 import './tailwind.css';
+import { type LoaderFunctionArgs, json } from '@remix-run/node';
+import { getSession } from './sessions';
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const session = await getSession(request.headers.get('Cookie'));
+  const isLoggedIn = session.has('userId');
+
+  return json({
+    isLoggedIn,
+  });
+};
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
