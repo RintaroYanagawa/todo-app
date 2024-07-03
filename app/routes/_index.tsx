@@ -1,4 +1,11 @@
-import type { MetaFunction } from '@remix-run/node';
+import {
+  json,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from '@remix-run/node';
+import { getSession } from '../sessions';
+import { useLoaderData } from '@remix-run/react';
+import { Button } from '~/components/ui/button';
 
 export const meta: MetaFunction = () => {
   return [
@@ -7,42 +14,23 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const session = await getSession(request.headers.get('Cookie'));
+  const isLoggedIn = session.has('userId');
+
+  return json({
+    isLoggedIn,
+  });
+};
+
 export default function Index() {
+  const data = useLoaderData<typeof loader>();
   return (
-    <div className="font-sans p-4">
-      <h1 className="text-3xl">Welcome to Remix</h1>
-      <ul className="list-disc mt-4 pl-6 space-y-2">
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/quickstart"
-            rel="noreferrer"
-          >
-            5m Quick Start
-          </a>
-        </li>
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/tutorial"
-            rel="noreferrer"
-          >
-            30m Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/docs"
-            rel="noreferrer"
-          >
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+    <div>
+      <header className="flex items-center justify-between px-5 py-3">
+        <p className="text-4xl font-bold select-none">Todos</p>
+        {data.isLoggedIn ? <Button>Sign out</Button> : <Button>Sign in</Button>}
+      </header>
     </div>
   );
 }
