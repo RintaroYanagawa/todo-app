@@ -7,7 +7,8 @@
     "build": "remix vite:build",
     "dev": "remix vite:dev --host 0.0.0.0",
     "start": "remix-serve ./build/server/index.js",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "check": "pnpm biome check --write ."
   },
   "dependencies": {
     "@remix-run/node": "^2.10.0",
@@ -18,6 +19,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.8.3",
     "@remix-run/dev": "^2.10.0",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
