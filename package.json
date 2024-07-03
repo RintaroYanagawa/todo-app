@@ -8,9 +8,14 @@
     "dev": "remix vite:dev --host 0.0.0.0",
     "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc",
-    "check": "pnpm biome check --write ."
+    "check": "pnpm biome check --write .",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:generate": "prisma generate",
+    "prisma:reset": "prisma migrate reset --force",
+    "prisma:studio": "prisma studio"
   },
   "dependencies": {
+    "@prisma/client": "5.16.1",
     "@remix-run/node": "^2.10.0",
     "@remix-run/react": "^2.10.0",
     "@remix-run/serve": "^2.10.0",

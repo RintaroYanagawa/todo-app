@@ -12,3 +12,29 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id             String   @id @db.Uuid
+  email          String   @unique
+  hashedPassword String   @map("hashed_password") @db.Char(64)
+  name           String
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  Todo           Todo[]
+
+  @@map("users")
+}
+
+model Todo {
+  id        String   @id @db.Uuid
+  title     String
+  content   String
+  deadline  DateTime @map("deadline")
+  isDone    Boolean  @map("is_done")
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("todos")
+}
