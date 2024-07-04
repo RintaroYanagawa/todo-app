@@ -7,6 +7,7 @@ import {
 } from '@remix-run/react';
 import './tailwind.css';
 import { type LoaderFunctionArgs, json } from '@remix-run/node';
+import SiteHeader from './components/feature/site/molecules/SiteHeader';
 import { getSession } from './sessions';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -28,7 +29,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <SiteHeader />
+        <div className="p-5">{children}</div>
         <ScrollRestoration />
         <Scripts />
       </body>
