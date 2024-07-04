@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
-import { AuthSignInForm } from '~/components/feature/auth/molecules/AuthSignInForm';
+import { AuthSignUpForm } from '~/components/feature/auth/molecules/AuthSignUpForm';
 import { notRequireUserSession } from '~/services/session.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -7,6 +7,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return null;
 };
 
-export default function SignIn() {
-  return <AuthSignInForm />;
+export default function SignUp() {
+  return (
+    <div className="mx-80 my-5">
+      <AuthSignUpForm />
+    </div>
+  );
 }
