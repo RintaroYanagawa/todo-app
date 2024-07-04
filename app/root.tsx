@@ -8,11 +8,10 @@ import {
 import './tailwind.css';
 import { type LoaderFunctionArgs, json } from '@remix-run/node';
 import { SiteHeader } from './components/feature/site/molecules/SiteHeader';
-import { getSession } from './sessions';
+import { getUserFromSession } from './services/session.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const session = await getSession(request.headers.get('Cookie'));
-  const isLoggedIn = session.has('userId');
+  const isLoggedIn = (await getUserFromSession(request)) != null;
 
   return json({
     isLoggedIn,

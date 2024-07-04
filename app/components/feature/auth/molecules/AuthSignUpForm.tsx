@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect } from 'react';
 import { type UseFormReturn, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Button } from '~/components/ui/button';
 import {
   Form,
@@ -12,38 +12,23 @@ import {
   FormMessage,
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
-
-const formSchema = z
-  .object({
-    email: z.string().email('Please enter your email address'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
-    passwordConfirm: z.string().min(1),
-    name: z.string().min(1),
-  })
-  .superRefine(({ password, passwordConfirm }, ctx) => {
-    if (password !== passwordConfirm) {
-      ctx.addIssue({
-        path: ['passwordConfirm'],
-        code: 'custom',
-        message: 'Password does not match',
-      });
-    }
-  });
+import {
+  type AuthSignInFormValues,
+  authSignInFormValuesSchema,
+} from '~/schemas/auth';
 
 type AuthSignUpFormPresentationalProps = {
-  form: UseFormReturn<z.infer<typeof formSchema>>;
-  handleSubmit: (values: z.infer<typeof formSchema>) => void;
+  form: UseFormReturn<AuthSignInFormValues>;
 };
 
 const AuthSignUpFormPresentational = ({
   form,
-  handleSubmit,
 }: AuthSignUpFormPresentationalProps) => {
   return (
     <div className="p-5 shadow rounded-lg space-y-3">
       <Form {...form}>
         <p className="font-bold text-xl">Sign In</p>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+        <form method="post" className="space-y-8">
           <FormField
             control={form.control}
             name="email"
@@ -51,7 +36,7 @@ const AuthSignUpFormPresentational = ({
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="shadcn" {...field} />
+                  <Input placeholder="shadcn" {...field} />
                 </FormControl>
                 <FormDescription>This is your email address.</FormDescription>
                 <FormMessage />
@@ -107,15 +92,43 @@ const AuthSignUpFormPresentational = ({
   );
 };
 
-export const AuthSignUpForm = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
-  const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-  };
+type AuthSignUpFormProps = {
+  validationErrors: { name: string; message: string }[];
+};
 
-  return (
-    <AuthSignUpFormPresentational form={form} handleSubmit={handleSubmit} />
-  );
+export const AuthSignUpForm = ({ validationErrors }: AuthSignUpFormProps) => {
+  const form = useForm<AuthSignInFormValues>({
+    resolver: zodResolver(authSignInFormValuesSchema),
+  });
+
+  useEffect(() => {
+    for (const validationError of validationErrors) {
+      if (validationError.name === 'email') {
+        form.setError('email', {
+          type: 'server',
+          message: validationError.message,
+        });
+      }
+      if (validationError.name === 'password') {
+        form.setError('password', {
+          type: 'server',
+          message: validationError.message,
+        });
+      }
+      if (validationError.name === 'passwordConfirm') {
+        form.setError('passwordConfirm', {
+          type: 'server',
+          message: validationError.message,
+        });
+      }
+      if (validationError.name === 'name') {
+        form.setError('name', {
+          type: 'server',
+          message: validationError.message,
+        });
+      }
+    }
+  }, [form.setError, validationErrors]);
+
+  return <AuthSignUpFormPresentational form={form} />;
 };

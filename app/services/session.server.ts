@@ -1,6 +1,4 @@
 import { createCookieSessionStorage, redirect } from '@remix-run/node';
-import { encryptSha256 } from '~/libs/hash';
-import { createUser, readUserByEmail } from '~/models/user.server';
 
 const sessionSecret: string | undefined = process.env['SESSION_SECRET'];
 if (sessionSecret === undefined) throw new Error('set SESSION_SECRET');
@@ -17,7 +15,10 @@ export const sessionStorage = createCookieSessionStorage({
   },
 });
 
-const createUserSession = async (userId: string, redirectPath: string) => {
+export const createUserSession = async (
+  userId: string,
+  redirectPath: string,
+) => {
   const session = await sessionStorage.getSession();
   session.set('userId', userId);
   return redirect(redirectPath, {
@@ -27,40 +28,14 @@ const createUserSession = async (userId: string, redirectPath: string) => {
   });
 };
 
-export const signIn = async ({
-  email,
-  password,
-}: { email: string; password: string }) => {
-  const user = await readUserByEmail(email);
-  const hashedPassword = encryptSha256(password);
-  if (user?.hashedPassword !== hashedPassword) {
-    return {
-      ok: false,
-      error: new Error(
-        'Could not log you in, please check the provided email or password',
-      ),
-    } as const;
-  }
+export const deleteUserSession = async () => {
+  const session = await sessionStorage.getSession();
 
-  return await createUserSession(user.id, '/');
-};
-
-export const signUp = async ({
-  email,
-  password,
-  name,
-}: { email: string; password: string; name: string }) => {
-  const user = await readUserByEmail(email);
-  if (user != null) {
-    return {
-      ok: false,
-      error: new Error('A user with the provided email address exists already'),
-    } as const;
-  }
-
-  const createdUser = await createUser({ email, password, name });
-
-  return await createUserSession(createdUser.id, '/');
+  return redirect('/auth/sign-in', {
+    headers: {
+      'Set-Cookie': await sessionStorage.destroySession(session),
+    },
+  });
 };
 
 export async function getUserFromSession(request: Request) {
