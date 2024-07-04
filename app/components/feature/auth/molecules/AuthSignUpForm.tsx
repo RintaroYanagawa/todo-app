@@ -36,7 +36,7 @@ const AuthSignUpFormPresentational = ({
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input {...field} />
                 </FormControl>
                 <FormDescription>This is your email address.</FormDescription>
                 <FormMessage />

@@ -1,6 +1,7 @@
 import { Link, useRouteLoaderData } from '@remix-run/react';
 import { buttonVariants } from '~/components/ui/button';
 import type { loader as routeLoader } from '~/root';
+import { AuthSignOutLink } from '../../auth/atoms/AuthSignOutLink';
 
 type SiteHeaderPresentationalProps = {
   isLoggedIn: boolean;
@@ -16,12 +17,7 @@ const SiteHeaderPresentational = ({
       </Link>
       <div className="space-x-3">
         {isLoggedIn ? (
-          <Link
-            to="/auth/sign-out"
-            className={buttonVariants({ variant: 'outline' })}
-          >
-            Sign out
-          </Link>
+          <AuthSignOutLink />
         ) : (
           <>
             <Link
