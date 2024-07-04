@@ -9,7 +9,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function SignUp() {
   return (
-    <div className="mx-80 my-5">
+    <div className="mx-3 md:mx-40 lg:mx-80 xl:mx-80 my-5">
       <AuthSignUpForm />
     </div>
   );
